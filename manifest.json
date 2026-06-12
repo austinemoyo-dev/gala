@@ -1,0 +1,19 @@
+{
+  "name": "Gala Night Gate Pass",
+  "short_name": "Gala Gate",
+  "description": "Gate check-in app for Vision University Student Week Gala Night",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
