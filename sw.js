@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gala-gate-v1';
+const CACHE_NAME = 'gala-gate-v2';
 
 const APP_SHELL = [
   './',
@@ -23,11 +23,31 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Cache-first for the app shell; fall back to network, and to the
-// cached index.html for navigations when fully offline.
+// The HTML shell and manifest are network-first so config/code updates
+// are picked up immediately when online, with cache as an offline fallback.
+// Everything else (icons, etc.) is cache-first.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
+
+  const isAppDoc = request.mode === 'navigate'
+    || request.url.endsWith('index.html')
+    || request.url.endsWith('manifest.json');
+
+  if (isAppDoc) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => {
@@ -41,11 +61,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => {
-          if (request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-        });
+        .catch(() => {});
     })
   );
 });
