@@ -1,1048 +1,1070 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Gala Night Gate Pass</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a0a0a">
-<style>
-  :root{
-    --bg: #0a0a0a;
-    --bg-elevated: #161616;
-    --bg-card: #1c1c1c;
-    --gold: #c9a84c;
-    --gold-dim: #8a7333;
-    --green: #3fae5c;
-    --green-bg: #1d3a26;
-    --amber: #e0a64a;
-    --amber-bg: #3a2e1a;
-    --red: #d9534f;
-    --text: #f5f1e6;
-    --text-dim: #a8a39a;
-    --border: #2c2c2c;
-  }
-
-  *{ box-sizing: border-box; }
-
-  html, body{
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  #app{
-    max-width: 720px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .hidden{ display: none !important; }
-
-  /* ---------- Header ---------- */
-  header.app-header{
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: var(--bg-elevated);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .header-title{
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .header-title h1{
-    margin: 0;
-    font-size: 1.15rem;
-    color: var(--gold);
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
-
-  .header-counter{
-    font-size: 0.9rem;
-    color: var(--text-dim);
-    font-weight: 600;
-  }
-
-  .header-counter strong{
-    color: var(--gold);
-  }
-
-  .header-right{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* ---------- Status badge ---------- */
-  .status-badge{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-
-  .status-badge.online{
-    background: var(--green-bg);
-    color: var(--green);
-  }
-
-  .status-badge.offline{
-    background: var(--amber-bg);
-    color: var(--amber);
-  }
-
-  .status-dot{
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: currentColor;
-  }
-
-  .sync-badge{
-    background: var(--amber-bg);
-    color: var(--amber);
-    border-radius: 999px;
-    padding: 4px 9px;
-    font-size: 0.7rem;
-    font-weight: 700;
-  }
-
-  /* ---------- Nav ---------- */
-  nav.bottom-nav{
-    position: sticky;
-    bottom: 0;
-    z-index: 20;
-    display: flex;
-    background: var(--bg-elevated);
-    border-top: 1px solid var(--border);
-  }
-
-  nav.bottom-nav button{
-    flex: 1;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 14px 8px;
-    min-height: 48px;
-    cursor: pointer;
-    transition: color 0.15s ease, background 0.15s ease;
-  }
-
-  nav.bottom-nav button.active{
-    color: var(--gold);
-    background: var(--bg-card);
-  }
-
-  /* ---------- Main content ---------- */
-  main{
-    flex: 1;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  /* ---------- Generic elements ---------- */
-  .card{
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-  }
-
-  h2{
-    margin: 0 0 12px 0;
-    color: var(--gold);
-    font-size: 1.1rem;
-  }
-
-  input[type="text"],
-  input[type="password"],
-  input[type="number"]{
-    width: 100%;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 14px 14px;
-    font-size: 1rem;
-    min-height: 48px;
-  }
-
-  input:focus{
-    outline: none;
-    border-color: var(--gold-dim);
-  }
-
-  button{
-    font-family: inherit;
-  }
-
-  .btn{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 48px;
-    padding: 12px 18px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
-    color: var(--text);
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: filter 0.15s ease, opacity 0.15s ease;
-  }
-
-  .btn:active{
-    filter: brightness(0.9);
-  }
-
-  .btn:disabled{
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-gold{
-    background: var(--gold);
-    color: #1a1505;
-    border-color: var(--gold);
-  }
-
-  .btn-green{
-    background: var(--green);
-    color: #06210d;
-    border-color: var(--green);
-  }
-
-  .btn-outline-red{
-    background: transparent;
-    color: var(--red);
-    border-color: var(--red);
-    min-height: 38px;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  .btn-block{
-    width: 100%;
-  }
-
-  /* ---------- PIN gate ---------- */
-  .pin-gate{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    gap: 16px;
-    text-align: center;
-    padding: 32px 16px;
-  }
-
-  .pin-gate h2{
-    margin: 0;
-  }
-
-  .pin-gate input{
-    text-align: center;
-    font-size: 1.6rem;
-    letter-spacing: 0.5em;
-    max-width: 220px;
-  }
-
-  .pin-error{
-    color: var(--red);
-    font-size: 0.85rem;
-    min-height: 1.2em;
-  }
-
-  /* ---------- Upload screen ---------- */
-  .dropzone{
-    border: 2px dashed var(--gold-dim);
-    border-radius: 12px;
-    padding: 32px 16px;
-    text-align: center;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
-  }
-
-  .dropzone.dragover{
-    background: var(--bg-elevated);
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  .dropzone input[type="file"]{
-    display: none;
-  }
-
-  .preview-wrap{
-    overflow-x: auto;
-  }
-
-  table.preview-table{
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-  }
-
-  table.preview-table th,
-  table.preview-table td{
-    text-align: left;
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  table.preview-table th{
-    color: var(--gold);
-    font-weight: 700;
-  }
-
-  .preview-meta{
-    color: var(--text-dim);
-    font-size: 0.9rem;
-    margin-top: 8px;
-  }
-
-  .progress-wrap{
-    background: var(--bg-elevated);
-    border-radius: 999px;
-    height: 14px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-
-  .progress-bar{
-    height: 100%;
-    width: 0%;
-    background: var(--gold);
-    transition: width 0.2s ease;
-  }
-
-  /* ---------- Gate screen ---------- */
-  .search-bar{
-    position: sticky;
-    top: 60px;
-    z-index: 10;
-    background: var(--bg);
-    padding-bottom: 4px;
-  }
-
-  .student-list{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .student-card{
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .student-info{
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  }
-
-  .student-name{
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--text);
-    word-break: break-word;
-  }
-
-  .student-matric{
-    color: var(--text-dim);
-    font-size: 0.85rem;
-  }
-
-  .student-meta{
-    font-size: 0.75rem;
-    color: var(--text-dim);
-  }
-
-  .student-actions{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .badge{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
-
-  .badge.paid{
-    background: var(--amber-bg);
-    color: var(--amber);
-  }
-
-  .badge.entered{
-    background: var(--green-bg);
-    color: var(--green);
-  }
-
-  .empty-state{
-    text-align: center;
-    color: var(--text-dim);
-    padding: 32px 16px;
-  }
-
-  .empty-state strong{
-    color: var(--text);
-  }
-
-  /* ---------- Summary screen ---------- */
-  .summary-stats{
-    display: flex;
-    gap: 12px;
-  }
-
-  .stat-box{
-    flex: 1;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-  }
-
-  .stat-box .stat-value{
-    font-size: 1.6rem;
-    font-weight: 800;
-  }
-
-  .stat-box.entered .stat-value{ color: var(--green); }
-  .stat-box.remaining .stat-value{ color: var(--amber); }
-
-  .stat-box .stat-label{
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .section-title{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-
-  .section-title h2{
-    margin: 0;
-  }
-
-  .section-title.entered h2{ color: var(--green); }
-  .section-title.remaining h2{ color: var(--amber); }
-
-  .summary-list{
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 320px;
-    overflow-y: auto;
-  }
-
-  .summary-row{
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    font-size: 0.9rem;
-  }
-
-  .summary-row .name{
-    font-weight: 600;
-  }
-
-  .summary-row .matric{
-    color: var(--text-dim);
-    font-size: 0.8rem;
-  }
-
-  /* ---------- Toast ---------- */
-  #toast{
-    position: fixed;
-    bottom: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--bg-elevated);
-    border: 1px solid var(--gold-dim);
-    color: var(--text);
-    padding: 10px 18px;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    z-index: 50;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  #toast.show{
-    opacity: 1;
-    transform: translateX(-50%) translateY(-6px);
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gala Night Gate Pass</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0a0a">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-elevated: #161616;
+      --bg-card: #1c1c1c;
+      --gold: #c9a84c;
+      --gold-dim: #8a7333;
+      --green: #3fae5c;
+      --green-bg: #1d3a26;
+      --amber: #e0a64a;
+      --amber-bg: #3a2e1a;
+      --red: #d9534f;
+      --text: #f5f1e6;
+      --text-dim: #a8a39a;
+      --border: #2c2c2c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #app {
+      max-width: 720px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---------- Header ---------- */
+    header.app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-title h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .header-counter {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .header-counter strong {
+      color: var(--gold);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ---------- Status badge ---------- */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .status-badge.online {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .status-badge.offline {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .sync-badge {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    /* ---------- Nav ---------- */
+    nav.bottom-nav {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
+      display: flex;
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border);
+    }
+
+    nav.bottom-nav button {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px 8px;
+      min-height: 48px;
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    nav.bottom-nav button.active {
+      color: var(--gold);
+      background: var(--bg-card);
+    }
+
+    /* ---------- Main content ---------- */
+    main {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ---------- Generic elements ---------- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    h2 {
+      margin: 0 0 12px 0;
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 14px 14px;
+      font-size: 1rem;
+      min-height: 48px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--gold-dim);
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: filter 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      filter: brightness(0.9);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #1a1505;
+      border-color: var(--gold);
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: #06210d;
+      border-color: var(--green);
+    }
+
+    .btn-outline-red {
+      background: transparent;
+      color: var(--red);
+      border-color: var(--red);
+      min-height: 38px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* ---------- PIN gate ---------- */
+    .pin-gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 16px;
+      text-align: center;
+      padding: 32px 16px;
+    }
+
+    .pin-gate h2 {
+      margin: 0;
+    }
+
+    .pin-gate input {
+      text-align: center;
+      font-size: 1.6rem;
+      letter-spacing: 0.5em;
+      max-width: 220px;
+    }
+
+    .pin-error {
+      color: var(--red);
+      font-size: 0.85rem;
+      min-height: 1.2em;
+    }
+
+    /* ---------- Upload screen ---------- */
+    .dropzone {
+      border: 2px dashed var(--gold-dim);
+      border-radius: 12px;
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .dropzone.dragover {
+      background: var(--bg-elevated);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .dropzone input[type="file"] {
+      display: none;
+    }
+
+    .preview-wrap {
+      overflow-x: auto;
+    }
+
+    table.preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    table.preview-table th,
+    table.preview-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.preview-table th {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .preview-meta {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    .progress-wrap {
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      height: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--gold);
+      transition: width 0.2s ease;
+    }
+
+    /* ---------- Gate screen ---------- */
+    .search-bar {
+      position: sticky;
+      top: 60px;
+      z-index: 10;
+      background: var(--bg);
+      padding-bottom: 4px;
+    }
+
+    .student-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .student-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .student-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .student-matric {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    .student-meta {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .student-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .badge.paid {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .badge.entered {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-dim);
+      padding: 32px 16px;
+    }
+
+    .empty-state strong {
+      color: var(--text);
+    }
+
+    /* ---------- Summary screen ---------- */
+    .summary-stats {
+      display: flex;
+      gap: 12px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-box .stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .stat-box.entered .stat-value {
+      color: var(--green);
+    }
+
+    .stat-box.remaining .stat-value {
+      color: var(--amber);
+    }
+
+    .stat-box .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+    }
+
+    .section-title.entered h2 {
+      color: var(--green);
+    }
+
+    .section-title.remaining h2 {
+      color: var(--amber);
+    }
+
+    .summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .summary-row .name {
+      font-weight: 600;
+    }
+
+    .summary-row .matric {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    /* ---------- Toast ---------- */
+    #toast {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-elevated);
+      border: 1px solid var(--gold-dim);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-6px);
+    }
+  </style>
 </head>
-<body>
-<div id="app">
 
-  <!-- ===================== PIN GATE ===================== -->
-  <div id="pin-gate" class="pin-gate hidden">
-    <h2>🔒 Upload Access</h2>
-    <p style="color:var(--text-dim); margin:0;">Enter the 4-digit PIN to access the upload screen</p>
-    <input type="password" id="pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
-    <div class="pin-error" id="pin-error"></div>
-    <div style="display:flex; gap:10px;">
-      <button class="btn" id="pin-cancel">Back to Gate</button>
-      <button class="btn btn-gold" id="pin-submit">Unlock</button>
+<body>
+  <div id="app">
+
+    <!-- ===================== PIN GATE ===================== -->
+    <div id="pin-gate" class="pin-gate hidden">
+      <h2>🔒 Upload Access</h2>
+      <p style="color:var(--text-dim); margin:0;">Enter the 4-digit PIN to access the upload screen</p>
+      <input type="password" id="pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+      <div class="pin-error" id="pin-error"></div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn" id="pin-cancel">Back to Gate</button>
+        <button class="btn btn-gold" id="pin-submit">Unlock</button>
+      </div>
     </div>
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="app-header" id="app-header">
+      <div class="header-title">
+        <h1 id="event-name">Gala Night 2026 🎉</h1>
+        <div class="header-counter" id="header-counter"><strong>0</strong> / 0 Entered</div>
+      </div>
+      <div class="header-right">
+        <span class="sync-badge hidden" id="sync-badge">0 pending</span>
+        <span class="status-badge online" id="status-badge">
+          <span class="status-dot"></span>
+          <span id="status-text">Online</span>
+        </span>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- ===================== UPLOAD SCREEN ===================== -->
+      <section id="screen-upload" class="hidden">
+        <div class="card">
+          <h2>Upload Student List</h2>
+          <div class="dropzone" id="dropzone">
+            <p>📂 Drag &amp; drop CSV or Excel file here<br>or click to choose a file</p>
+            <input type="file" id="file-input" accept=".csv,.xlsx,.xls">
+          </div>
+        </div>
+
+        <div class="card hidden" id="preview-card">
+          <h2>Preview</h2>
+          <div class="preview-wrap">
+            <table class="preview-table" id="preview-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Matric Number</th>
+                </tr>
+              </thead>
+              <tbody id="preview-tbody"></tbody>
+            </table>
+          </div>
+          <div class="preview-meta" id="preview-meta"></div>
+          <div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">
+            <div class="progress-wrap hidden" id="progress-wrap">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <button class="btn btn-gold btn-block" id="confirm-upload-btn">Confirm &amp; Upload</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== GATE SCREEN ===================== -->
+      <section id="screen-gate" class="hidden">
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Search by name or matric number…" autocomplete="off">
+        </div>
+        <div class="student-list" id="student-list"></div>
+        <div class="empty-state hidden" id="empty-state">
+          No student found for "<strong id="empty-state-query"></strong>"
+        </div>
+      </section>
+
+      <!-- ===================== SUMMARY SCREEN ===================== -->
+      <section id="screen-summary" class="hidden">
+        <div class="summary-stats">
+          <div class="stat-box entered">
+            <div class="stat-value" id="summary-entered-count">0</div>
+            <div class="stat-label">Entered</div>
+          </div>
+          <div class="stat-box remaining">
+            <div class="stat-value" id="summary-remaining-count">0</div>
+            <div class="stat-label">Not Yet Entered</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title remaining">
+            <h2>Not Yet Entered</h2>
+            <button class="btn" id="export-not-entered-btn">⬇ Export CSV</button>
+          </div>
+          <div class="summary-list" id="summary-remaining-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title entered">
+            <h2>Entered</h2>
+          </div>
+          <div class="summary-list" id="summary-entered-list"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===================== BOTTOM NAV ===================== -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button id="nav-gate" data-screen="gate" class="active">🚪 Gate</button>
+      <button id="nav-summary" data-screen="summary">📊 Summary</button>
+      <button id="nav-upload" data-screen="upload">📤 Upload</button>
+    </nav>
+
+    <div id="toast"></div>
   </div>
 
-  <!-- ===================== HEADER ===================== -->
-  <header class="app-header" id="app-header">
-    <div class="header-title">
-      <h1 id="event-name">Gala Night 2026 🎉</h1>
-      <div class="header-counter" id="header-counter"><strong>0</strong> / 0 Entered</div>
-    </div>
-    <div class="header-right">
-      <span class="sync-badge hidden" id="sync-badge">0 pending</span>
-      <span class="status-badge online" id="status-badge">
-        <span class="status-dot"></span>
-        <span id="status-text">Online</span>
-      </span>
-    </div>
-  </header>
+  <!-- ===================== SCRIPTS ===================== -->
+  <!-- Supabase JS v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- PapaParse (CSV) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+  <!-- SheetJS (Excel) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <main>
+  <script>
+    // ===================== CONFIG =====================
+    const CONFIG = {
+      SUPABASE_URL: 'https://nymbmirmamkllxfrvvio.supabase.co',
+      SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bWJtaXJtYW1rbGx4ZnJ2dmlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzQ1MTYsImV4cCI6MjA5Njg1MDUxNn0.4CHQcg__AmDz8D5KDktP_b5sFVqPkOItmCRf8O6Ghig',
+      ADMIN_PIN: '4321',
+      EVENT_NAME: 'Gala Night 2026',
+      TOTAL_LABEL: 'Students'
+    };
 
-    <!-- ===================== UPLOAD SCREEN ===================== -->
-    <section id="screen-upload" class="hidden">
-      <div class="card">
-        <h2>Upload Student List</h2>
-        <div class="dropzone" id="dropzone">
-          <p>📂 Drag &amp; drop CSV or Excel file here<br>or click to choose a file</p>
-          <input type="file" id="file-input" accept=".csv,.xlsx,.xls">
-        </div>
-      </div>
-
-      <div class="card hidden" id="preview-card">
-        <h2>Preview</h2>
-        <div class="preview-wrap">
-          <table class="preview-table" id="preview-table">
-            <thead><tr><th>Name</th><th>Matric Number</th></tr></thead>
-            <tbody id="preview-tbody"></tbody>
-          </table>
-        </div>
-        <div class="preview-meta" id="preview-meta"></div>
-        <div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">
-          <div class="progress-wrap hidden" id="progress-wrap">
-            <div class="progress-bar" id="progress-bar"></div>
-          </div>
-          <button class="btn btn-gold btn-block" id="confirm-upload-btn">Confirm &amp; Upload</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== GATE SCREEN ===================== -->
-    <section id="screen-gate" class="hidden">
-      <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search by name or matric number…" autocomplete="off">
-      </div>
-      <div class="student-list" id="student-list"></div>
-      <div class="empty-state hidden" id="empty-state">
-        No student found for "<strong id="empty-state-query"></strong>"
-      </div>
-    </section>
-
-    <!-- ===================== SUMMARY SCREEN ===================== -->
-    <section id="screen-summary" class="hidden">
-      <div class="summary-stats">
-        <div class="stat-box entered">
-          <div class="stat-value" id="summary-entered-count">0</div>
-          <div class="stat-label">Entered</div>
-        </div>
-        <div class="stat-box remaining">
-          <div class="stat-value" id="summary-remaining-count">0</div>
-          <div class="stat-label">Not Yet Entered</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title remaining">
-          <h2>Not Yet Entered</h2>
-          <button class="btn" id="export-not-entered-btn">⬇ Export CSV</button>
-        </div>
-        <div class="summary-list" id="summary-remaining-list"></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title entered">
-          <h2>Entered</h2>
-        </div>
-        <div class="summary-list" id="summary-entered-list"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ===================== BOTTOM NAV ===================== -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <button id="nav-gate" data-screen="gate" class="active">🚪 Gate</button>
-    <button id="nav-summary" data-screen="summary">📊 Summary</button>
-    <button id="nav-upload" data-screen="upload">📤 Upload</button>
-  </nav>
-
-  <div id="toast"></div>
-</div>
-
-<!-- ===================== SCRIPTS ===================== -->
-<!-- Supabase JS v2 -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<!-- PapaParse (CSV) -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
-<!-- SheetJS (Excel) -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-<script>
-  // ===================== CONFIG =====================
-  const CONFIG = {
-    SUPABASE_URL: 'https://YOUR_PROJECT.supabase.co',
-    SUPABASE_ANON_KEY: 'YOUR_ANON_KEY',
-    ADMIN_PIN: '4321',
-    EVENT_NAME: 'Gala Night 2026',
-    TOTAL_LABEL: 'Students'
-  };
-
-  // ===================== SUPABASE CLIENT =====================
-  let db = null;
-  try {
-    db = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-  } catch (err) {
-    console.error('Supabase client init failed — check CONFIG block.', err);
-  }
-
-  // ===================== STATE =====================
-  const state = {
-    students: [],       // full cached list
-    currentScreen: 'gate',
-    uploadUnlocked: false,
-    pendingUpload: null  // parsed rows awaiting confirmation
-  };
-
-  // ===================== DOM REFS =====================
-  const dom = {
-    eventName: document.getElementById('event-name'),
-    headerCounter: document.getElementById('header-counter'),
-    statusBadge: document.getElementById('status-badge'),
-    statusText: document.getElementById('status-text'),
-    syncBadge: document.getElementById('sync-badge'),
-
-    bottomNav: document.getElementById('bottom-nav'),
-    navGate: document.getElementById('nav-gate'),
-    navSummary: document.getElementById('nav-summary'),
-    navUpload: document.getElementById('nav-upload'),
-
-    screenUpload: document.getElementById('screen-upload'),
-    screenGate: document.getElementById('screen-gate'),
-    screenSummary: document.getElementById('screen-summary'),
-
-    pinGate: document.getElementById('pin-gate'),
-    pinInput: document.getElementById('pin-input'),
-    pinError: document.getElementById('pin-error'),
-    pinSubmit: document.getElementById('pin-submit'),
-    pinCancel: document.getElementById('pin-cancel'),
-
-    appHeader: document.getElementById('app-header'),
-
-    searchInput: document.getElementById('search-input'),
-    studentList: document.getElementById('student-list'),
-    emptyState: document.getElementById('empty-state'),
-    emptyStateQuery: document.getElementById('empty-state-query'),
-
-    summaryEnteredCount: document.getElementById('summary-entered-count'),
-    summaryRemainingCount: document.getElementById('summary-remaining-count'),
-    summaryRemainingList: document.getElementById('summary-remaining-list'),
-    summaryEnteredList: document.getElementById('summary-entered-list'),
-    exportNotEnteredBtn: document.getElementById('export-not-entered-btn'),
-
-    dropzone: document.getElementById('dropzone'),
-    fileInput: document.getElementById('file-input'),
-    previewCard: document.getElementById('preview-card'),
-    previewTbody: document.getElementById('preview-tbody'),
-    previewMeta: document.getElementById('preview-meta'),
-    progressWrap: document.getElementById('progress-wrap'),
-    progressBar: document.getElementById('progress-bar'),
-    confirmUploadBtn: document.getElementById('confirm-upload-btn'),
-
-    toast: document.getElementById('toast')
-  };
-
-  // ===================== TOAST =====================
-  let toastTimer = null;
-  function showToast(message, duration = 2200) {
-    dom.toast.textContent = message;
-    dom.toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => dom.toast.classList.remove('show'), duration);
-  }
-
-  // ===================== SCREEN NAVIGATION =====================
-  const screens = {
-    gate: dom.screenGate,
-    summary: dom.screenSummary,
-    upload: dom.screenUpload
-  };
-
-  function showScreen(name) {
-    Object.entries(screens).forEach(([key, el]) => {
-      el.classList.toggle('hidden', key !== name);
-    });
-    [dom.navGate, dom.navSummary, dom.navUpload].forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.screen === name);
-    });
-    state.currentScreen = name;
-
-    if (name === 'gate') {
-      dom.searchInput && dom.searchInput.focus();
-    }
-  }
-
-  function goToScreen(name) {
-    if (name === 'upload' && !state.uploadUnlocked) {
-      openPinGate();
-      return;
-    }
-    showScreen(name);
-  }
-
-  dom.navGate.addEventListener('click', () => goToScreen('gate'));
-  dom.navSummary.addEventListener('click', () => goToScreen('summary'));
-  dom.navUpload.addEventListener('click', () => goToScreen('upload'));
-
-  // ===================== PIN GATE =====================
-  function openPinGate() {
-    dom.pinError.textContent = '';
-    dom.pinInput.value = '';
-    dom.appHeader.classList.add('hidden');
-    dom.bottomNav.classList.add('hidden');
-    Object.values(screens).forEach(el => el.classList.add('hidden'));
-    dom.pinGate.classList.remove('hidden');
-    setTimeout(() => dom.pinInput.focus(), 50);
-  }
-
-  function closePinGate(unlocked) {
-    dom.pinGate.classList.add('hidden');
-    dom.appHeader.classList.remove('hidden');
-    dom.bottomNav.classList.remove('hidden');
-    if (unlocked) {
-      state.uploadUnlocked = true;
-      showScreen('upload');
-    } else {
-      showScreen('gate');
-    }
-  }
-
-  function attemptPinUnlock() {
-    const value = dom.pinInput.value.trim();
-    if (value === CONFIG.ADMIN_PIN) {
-      closePinGate(true);
-    } else {
-      dom.pinError.textContent = 'Incorrect PIN. Try again.';
-      dom.pinInput.value = '';
-      dom.pinInput.focus();
-    }
-  }
-
-  dom.pinSubmit.addEventListener('click', attemptPinUnlock);
-  dom.pinInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') attemptPinUnlock();
-  });
-  dom.pinCancel.addEventListener('click', () => closePinGate(false));
-
-  // ===================== ONLINE/OFFLINE BADGE =====================
-  function updateOnlineStatus() {
-    const online = navigator.onLine;
-    dom.statusBadge.classList.toggle('online', online);
-    dom.statusBadge.classList.toggle('offline', !online);
-    dom.statusText.textContent = online ? 'Online' : 'Offline';
-  }
-
-  window.addEventListener('online', () => {
-    updateOnlineStatus();
-    processSyncQueue();
-    loadStudentsFromSupabase();
-    setupRealtimeSubscription();
-  });
-  window.addEventListener('offline', updateOnlineStatus);
-
-  // ===================== REALTIME SUBSCRIPTION =====================
-  let realtimeChannel = null;
-
-  function setupRealtimeSubscription() {
-    if (!db) return;
-
-    if (realtimeChannel) {
-      db.removeChannel(realtimeChannel);
-      realtimeChannel = null;
+    // ===================== SUPABASE CLIENT =====================
+    let db = null;
+    try {
+      db = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+    } catch (err) {
+      console.error('Supabase client init failed — check CONFIG block.', err);
     }
 
-    realtimeChannel = db
-      .channel('students-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, handleRealtimeChange)
-      .subscribe((status) => {
-        console.log('Realtime subscription status:', status);
+    // ===================== STATE =====================
+    const state = {
+      students: [],       // full cached list
+      currentScreen: 'gate',
+      uploadUnlocked: false,
+      pendingUpload: null  // parsed rows awaiting confirmation
+    };
+
+    // ===================== DOM REFS =====================
+    const dom = {
+      eventName: document.getElementById('event-name'),
+      headerCounter: document.getElementById('header-counter'),
+      statusBadge: document.getElementById('status-badge'),
+      statusText: document.getElementById('status-text'),
+      syncBadge: document.getElementById('sync-badge'),
+
+      bottomNav: document.getElementById('bottom-nav'),
+      navGate: document.getElementById('nav-gate'),
+      navSummary: document.getElementById('nav-summary'),
+      navUpload: document.getElementById('nav-upload'),
+
+      screenUpload: document.getElementById('screen-upload'),
+      screenGate: document.getElementById('screen-gate'),
+      screenSummary: document.getElementById('screen-summary'),
+
+      pinGate: document.getElementById('pin-gate'),
+      pinInput: document.getElementById('pin-input'),
+      pinError: document.getElementById('pin-error'),
+      pinSubmit: document.getElementById('pin-submit'),
+      pinCancel: document.getElementById('pin-cancel'),
+
+      appHeader: document.getElementById('app-header'),
+
+      searchInput: document.getElementById('search-input'),
+      studentList: document.getElementById('student-list'),
+      emptyState: document.getElementById('empty-state'),
+      emptyStateQuery: document.getElementById('empty-state-query'),
+
+      summaryEnteredCount: document.getElementById('summary-entered-count'),
+      summaryRemainingCount: document.getElementById('summary-remaining-count'),
+      summaryRemainingList: document.getElementById('summary-remaining-list'),
+      summaryEnteredList: document.getElementById('summary-entered-list'),
+      exportNotEnteredBtn: document.getElementById('export-not-entered-btn'),
+
+      dropzone: document.getElementById('dropzone'),
+      fileInput: document.getElementById('file-input'),
+      previewCard: document.getElementById('preview-card'),
+      previewTbody: document.getElementById('preview-tbody'),
+      previewMeta: document.getElementById('preview-meta'),
+      progressWrap: document.getElementById('progress-wrap'),
+      progressBar: document.getElementById('progress-bar'),
+      confirmUploadBtn: document.getElementById('confirm-upload-btn'),
+
+      toast: document.getElementById('toast')
+    };
+
+    // ===================== TOAST =====================
+    let toastTimer = null;
+    function showToast(message, duration = 2200) {
+      dom.toast.textContent = message;
+      dom.toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => dom.toast.classList.remove('show'), duration);
+    }
+
+    // ===================== SCREEN NAVIGATION =====================
+    const screens = {
+      gate: dom.screenGate,
+      summary: dom.screenSummary,
+      upload: dom.screenUpload
+    };
+
+    function showScreen(name) {
+      Object.entries(screens).forEach(([key, el]) => {
+        el.classList.toggle('hidden', key !== name);
       });
-  }
+      [dom.navGate, dom.navSummary, dom.navUpload].forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.screen === name);
+      });
+      state.currentScreen = name;
 
-  function handleRealtimeChange(payload) {
-    if (payload.eventType === 'UPDATE') {
-      const updated = payload.new;
-      const idx = state.students.findIndex(s => s.id === updated.id);
-      if (idx !== -1) {
-        state.students[idx] = { ...state.students[idx], ...updated };
+      if (name === 'gate') {
+        dom.searchInput && dom.searchInput.focus();
+      }
+    }
+
+    function goToScreen(name) {
+      if (name === 'upload' && !state.uploadUnlocked) {
+        openPinGate();
+        return;
+      }
+      showScreen(name);
+    }
+
+    dom.navGate.addEventListener('click', () => goToScreen('gate'));
+    dom.navSummary.addEventListener('click', () => goToScreen('summary'));
+    dom.navUpload.addEventListener('click', () => goToScreen('upload'));
+
+    // ===================== PIN GATE =====================
+    function openPinGate() {
+      dom.pinError.textContent = '';
+      dom.pinInput.value = '';
+      dom.appHeader.classList.add('hidden');
+      dom.bottomNav.classList.add('hidden');
+      Object.values(screens).forEach(el => el.classList.add('hidden'));
+      dom.pinGate.classList.remove('hidden');
+      setTimeout(() => dom.pinInput.focus(), 50);
+    }
+
+    function closePinGate(unlocked) {
+      dom.pinGate.classList.add('hidden');
+      dom.appHeader.classList.remove('hidden');
+      dom.bottomNav.classList.remove('hidden');
+      if (unlocked) {
+        state.uploadUnlocked = true;
+        showScreen('upload');
       } else {
-        state.students.push(updated);
+        showScreen('gate');
       }
-      saveStudentsCache();
-      updateHeaderCounter();
-      renderStudentList();
-    } else if (payload.eventType === 'INSERT' || payload.eventType === 'DELETE') {
+    }
+
+    function attemptPinUnlock() {
+      const value = dom.pinInput.value.trim();
+      if (value === CONFIG.ADMIN_PIN) {
+        closePinGate(true);
+      } else {
+        dom.pinError.textContent = 'Incorrect PIN. Try again.';
+        dom.pinInput.value = '';
+        dom.pinInput.focus();
+      }
+    }
+
+    dom.pinSubmit.addEventListener('click', attemptPinUnlock);
+    dom.pinInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptPinUnlock();
+    });
+    dom.pinCancel.addEventListener('click', () => closePinGate(false));
+
+    // ===================== ONLINE/OFFLINE BADGE =====================
+    function updateOnlineStatus() {
+      const online = navigator.onLine;
+      dom.statusBadge.classList.toggle('online', online);
+      dom.statusBadge.classList.toggle('offline', !online);
+      dom.statusText.textContent = online ? 'Online' : 'Offline';
+    }
+
+    window.addEventListener('online', () => {
+      updateOnlineStatus();
+      processSyncQueue();
       loadStudentsFromSupabase();
-    }
-  }
+      setupRealtimeSubscription();
+    });
+    window.addEventListener('offline', updateOnlineStatus);
 
-  // ===================== HEADER COUNTER =====================
-  function updateHeaderCounter() {
-    const total = state.students.length;
-    const entered = state.students.filter(s => s.status === 'entered').length;
-    dom.headerCounter.innerHTML = `<strong>${entered}</strong> / ${total} Entered`;
-    renderSummary();
-  }
+    // ===================== REALTIME SUBSCRIPTION =====================
+    let realtimeChannel = null;
 
-  // ===================== SUMMARY SCREEN =====================
-  function renderSummaryRow(s) {
-    return `<div class="summary-row">
-      <span class="name">${escapeHtml(s.name)}</span>
-      <span class="matric">${s.matric ? escapeHtml(s.matric) : '—'}</span>
-    </div>`;
-  }
+    function setupRealtimeSubscription() {
+      if (!db) return;
 
-  function renderSummary() {
-    const entered = state.students.filter(s => s.status === 'entered');
-    const remaining = state.students.filter(s => s.status !== 'entered');
-
-    dom.summaryEnteredCount.textContent = entered.length;
-    dom.summaryRemainingCount.textContent = remaining.length;
-
-    dom.summaryRemainingList.innerHTML = remaining.length
-      ? remaining.map(renderSummaryRow).join('')
-      : `<div class="empty-state">Everyone has entered 🎉</div>`;
-
-    dom.summaryEnteredList.innerHTML = entered.length
-      ? entered.map(renderSummaryRow).join('')
-      : `<div class="empty-state">No one has entered yet</div>`;
-  }
-
-  dom.exportNotEnteredBtn.addEventListener('click', () => {
-    const remaining = state.students.filter(s => s.status !== 'entered');
-    if (!remaining.length) {
-      showToast('Everyone has entered — nothing to export.');
-      return;
-    }
-
-    const csv = Papa.unparse(remaining.map(s => ({
-      Name: s.name,
-      'Matric Number': s.matric || ''
-    })));
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'not_entered.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  });
-
-  // ===================== LOCAL CACHE =====================
-  const STUDENTS_CACHE_KEY = 'gala_students';
-  const SYNC_QUEUE_KEY = 'gala_sync_queue';
-
-  function saveStudentsCache() {
-    try {
-      localStorage.setItem(STUDENTS_CACHE_KEY, JSON.stringify(state.students));
-    } catch (err) {
-      console.error('Failed to save students cache:', err);
-    }
-  }
-
-  function loadStudentsCache() {
-    try {
-      const raw = localStorage.getItem(STUDENTS_CACHE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (err) {
-      console.error('Failed to load students cache:', err);
-      return [];
-    }
-  }
-
-  // ===================== SYNC QUEUE =====================
-  function getSyncQueue() {
-    try {
-      const raw = localStorage.getItem(SYNC_QUEUE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (err) {
-      console.error('Failed to read sync queue:', err);
-      return [];
-    }
-  }
-
-  function saveSyncQueue(queue) {
-    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue));
-    updateSyncBadge();
-  }
-
-  function addToSyncQueue(item) {
-    const queue = getSyncQueue().filter(q => q.id !== item.id);
-    queue.push(item);
-    saveSyncQueue(queue);
-  }
-
-  function updateSyncBadge() {
-    const queue = getSyncQueue();
-    if (queue.length > 0) {
-      dom.syncBadge.textContent = `${queue.length} pending`;
-      dom.syncBadge.classList.remove('hidden');
-    } else {
-      dom.syncBadge.classList.add('hidden');
-    }
-  }
-
-  async function processSyncQueue() {
-    if (!db || !navigator.onLine) return;
-    const queue = getSyncQueue();
-    if (!queue.length) return;
-
-    const remaining = [];
-    for (const item of queue) {
-      const { error } = await db
-        .from('students')
-        .update({ status: item.status, entered_at: item.entered_at })
-        .eq('id', item.id);
-      if (error) {
-        console.error('Sync failed for', item.id, error);
-        remaining.push(item);
+      if (realtimeChannel) {
+        db.removeChannel(realtimeChannel);
+        realtimeChannel = null;
       }
+
+      realtimeChannel = db
+        .channel('students-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, handleRealtimeChange)
+        .subscribe((status) => {
+          console.log('Realtime subscription status:', status);
+        });
     }
 
-    saveSyncQueue(remaining);
-    if (remaining.length < queue.length) {
-      showToast('Synced pending changes.');
-    }
-  }
-
-  // Retry sync queue every 30 seconds
-  setInterval(processSyncQueue, 30000);
-
-  // ===================== LOAD STUDENTS =====================
-  async function loadStudentsFromSupabase() {
-    if (db && navigator.onLine) {
-      try {
-        const { data, error } = await db
-          .from('students')
-          .select('*')
-          .order('name', { ascending: true });
-
-        if (error) throw error;
-
-        state.students = data || [];
+    function handleRealtimeChange(payload) {
+      if (payload.eventType === 'UPDATE') {
+        const updated = payload.new;
+        const idx = state.students.findIndex(s => s.id === updated.id);
+        if (idx !== -1) {
+          state.students[idx] = { ...state.students[idx], ...updated };
+        } else {
+          state.students.push(updated);
+        }
         saveStudentsCache();
         updateHeaderCounter();
         renderStudentList();
-        return;
-      } catch (err) {
-        console.error('Failed to load students from Supabase, using cache:', err);
+      } else if (payload.eventType === 'INSERT' || payload.eventType === 'DELETE') {
+        loadStudentsFromSupabase();
       }
     }
 
-    state.students = loadStudentsCache();
-    updateHeaderCounter();
-    renderStudentList();
-  }
+    // ===================== HEADER COUNTER =====================
+    function updateHeaderCounter() {
+      const total = state.students.length;
+      const entered = state.students.filter(s => s.status === 'entered').length;
+      dom.headerCounter.innerHTML = `<strong>${entered}</strong> / ${total} Entered`;
+      renderSummary();
+    }
 
-  // ===================== GATE: SEARCH & RENDER =====================
-  function getFilteredStudents() {
-    const query = dom.searchInput.value.trim().toLowerCase();
-    if (!query) return state.students;
-    return state.students.filter(s => {
-      const name = (s.name || '').toLowerCase().trim();
-      const matric = (s.matric || '').toLowerCase().trim();
-      return name.includes(query) || matric.includes(query);
+    // ===================== SUMMARY SCREEN =====================
+    function renderSummaryRow(s) {
+      return `<div class="summary-row">
+      <span class="name">${escapeHtml(s.name)}</span>
+      <span class="matric">${s.matric ? escapeHtml(s.matric) : '—'}</span>
+    </div>`;
+    }
+
+    function renderSummary() {
+      const entered = state.students.filter(s => s.status === 'entered');
+      const remaining = state.students.filter(s => s.status !== 'entered');
+
+      dom.summaryEnteredCount.textContent = entered.length;
+      dom.summaryRemainingCount.textContent = remaining.length;
+
+      dom.summaryRemainingList.innerHTML = remaining.length
+        ? remaining.map(renderSummaryRow).join('')
+        : `<div class="empty-state">Everyone has entered 🎉</div>`;
+
+      dom.summaryEnteredList.innerHTML = entered.length
+        ? entered.map(renderSummaryRow).join('')
+        : `<div class="empty-state">No one has entered yet</div>`;
+    }
+
+    dom.exportNotEnteredBtn.addEventListener('click', () => {
+      const remaining = state.students.filter(s => s.status !== 'entered');
+      if (!remaining.length) {
+        showToast('Everyone has entered — nothing to export.');
+        return;
+      }
+
+      const csv = Papa.unparse(remaining.map(s => ({
+        Name: s.name,
+        'Matric Number': s.matric || ''
+      })));
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'not_entered.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     });
-  }
 
-  function formatTime(isoString) {
-    if (!isoString) return '';
-    const d = new Date(isoString);
-    return d.toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
-  }
+    // ===================== LOCAL CACHE =====================
+    const STUDENTS_CACHE_KEY = 'gala_students';
+    const SYNC_QUEUE_KEY = 'gala_sync_queue';
 
-  function renderStudentCard(s) {
-    const matricDisplay = s.matric ? escapeHtml(s.matric) : '—';
+    function saveStudentsCache() {
+      try {
+        localStorage.setItem(STUDENTS_CACHE_KEY, JSON.stringify(state.students));
+      } catch (err) {
+        console.error('Failed to save students cache:', err);
+      }
+    }
 
-    if (s.status === 'entered') {
-      return `
+    function loadStudentsCache() {
+      try {
+        const raw = localStorage.getItem(STUDENTS_CACHE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (err) {
+        console.error('Failed to load students cache:', err);
+        return [];
+      }
+    }
+
+    // ===================== SYNC QUEUE =====================
+    function getSyncQueue() {
+      try {
+        const raw = localStorage.getItem(SYNC_QUEUE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (err) {
+        console.error('Failed to read sync queue:', err);
+        return [];
+      }
+    }
+
+    function saveSyncQueue(queue) {
+      localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue));
+      updateSyncBadge();
+    }
+
+    function addToSyncQueue(item) {
+      const queue = getSyncQueue().filter(q => q.id !== item.id);
+      queue.push(item);
+      saveSyncQueue(queue);
+    }
+
+    function updateSyncBadge() {
+      const queue = getSyncQueue();
+      if (queue.length > 0) {
+        dom.syncBadge.textContent = `${queue.length} pending`;
+        dom.syncBadge.classList.remove('hidden');
+      } else {
+        dom.syncBadge.classList.add('hidden');
+      }
+    }
+
+    async function processSyncQueue() {
+      if (!db || !navigator.onLine) return;
+      const queue = getSyncQueue();
+      if (!queue.length) return;
+
+      const remaining = [];
+      for (const item of queue) {
+        const { error } = await db
+          .from('students')
+          .update({ status: item.status, entered_at: item.entered_at })
+          .eq('id', item.id);
+        if (error) {
+          console.error('Sync failed for', item.id, error);
+          remaining.push(item);
+        }
+      }
+
+      saveSyncQueue(remaining);
+      if (remaining.length < queue.length) {
+        showToast('Synced pending changes.');
+      }
+    }
+
+    // Retry sync queue every 30 seconds
+    setInterval(processSyncQueue, 30000);
+
+    // ===================== LOAD STUDENTS =====================
+    async function loadStudentsFromSupabase() {
+      if (db && navigator.onLine) {
+        try {
+          const { data, error } = await db
+            .from('students')
+            .select('*')
+            .order('name', { ascending: true });
+
+          if (error) throw error;
+
+          state.students = data || [];
+          saveStudentsCache();
+          updateHeaderCounter();
+          renderStudentList();
+          return;
+        } catch (err) {
+          console.error('Failed to load students from Supabase, using cache:', err);
+        }
+      }
+
+      state.students = loadStudentsCache();
+      updateHeaderCounter();
+      renderStudentList();
+    }
+
+    // ===================== GATE: SEARCH & RENDER =====================
+    function getFilteredStudents() {
+      const query = dom.searchInput.value.trim().toLowerCase();
+      if (!query) return state.students;
+      return state.students.filter(s => {
+        const name = (s.name || '').toLowerCase().trim();
+        const matric = (s.matric || '').toLowerCase().trim();
+        return name.includes(query) || matric.includes(query);
+      });
+    }
+
+    function formatTime(isoString) {
+      if (!isoString) return '';
+      const d = new Date(isoString);
+      return d.toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+    }
+
+    function renderStudentCard(s) {
+      const matricDisplay = s.matric ? escapeHtml(s.matric) : '—';
+
+      if (s.status === 'entered') {
+        return `
         <div class="student-card" data-id="${s.id}">
           <div class="student-info">
             <div class="student-name">${escapeHtml(s.name)}</div>
@@ -1054,9 +1076,9 @@
             <button class="btn btn-outline-red" data-action="unmark" data-id="${s.id}">Unmark</button>
           </div>
         </div>`;
-    }
+      }
 
-    return `
+      return `
       <div class="student-card" data-id="${s.id}">
         <div class="student-info">
           <div class="student-name">${escapeHtml(s.name)}</div>
@@ -1067,269 +1089,270 @@
           <button class="btn btn-green" data-action="mark" data-id="${s.id}">Mark as Entered</button>
         </div>
       </div>`;
-  }
-
-  function renderStudentList() {
-    const query = dom.searchInput.value.trim();
-    const filtered = getFilteredStudents();
-
-    if (filtered.length === 0) {
-      dom.studentList.innerHTML = '';
-      dom.emptyStateQuery.textContent = query;
-      dom.emptyState.classList.remove('hidden');
-      return;
     }
 
-    dom.emptyState.classList.add('hidden');
-    dom.studentList.innerHTML = filtered.map(renderStudentCard).join('');
-  }
+    function renderStudentList() {
+      const query = dom.searchInput.value.trim();
+      const filtered = getFilteredStudents();
 
-  dom.searchInput.addEventListener('input', renderStudentList);
-
-  // ===================== GATE: MARK / UNMARK =====================
-  dom.studentList.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-action]');
-    if (!btn) return;
-    const id = btn.dataset.id;
-
-    if (btn.dataset.action === 'mark') {
-      markEntered(id);
-    } else if (btn.dataset.action === 'unmark') {
-      const student = state.students.find(s => s.id === id);
-      const ok = confirm(`Unmark "${student ? student.name : 'this student'}" as entered?`);
-      if (ok) unmarkEntered(id);
-    }
-  });
-
-  async function markEntered(id) {
-    const student = state.students.find(s => s.id === id);
-    if (!student || student.status === 'entered') return;
-
-    const enteredAt = new Date().toISOString();
-    student.status = 'entered';
-    student.entered_at = enteredAt;
-    saveStudentsCache();
-    renderStudentList();
-    updateHeaderCounter();
-
-    await syncStudentUpdate(id, 'entered', enteredAt, 'mark');
-  }
-
-  async function unmarkEntered(id) {
-    const student = state.students.find(s => s.id === id);
-    if (!student || student.status !== 'entered') return;
-
-    student.status = 'paid';
-    student.entered_at = null;
-    saveStudentsCache();
-    renderStudentList();
-    updateHeaderCounter();
-
-    await syncStudentUpdate(id, 'paid', null, 'unmark');
-  }
-
-  async function syncStudentUpdate(id, status, enteredAt, action) {
-    if (!db || !navigator.onLine) {
-      addToSyncQueue({ id, status, entered_at: enteredAt, action });
-      return;
-    }
-
-    const { error } = await db
-      .from('students')
-      .update({ status, entered_at: enteredAt })
-      .eq('id', id);
-
-    if (error) {
-      console.error('Update failed, queuing for retry:', error);
-      addToSyncQueue({ id, status, entered_at: enteredAt, action });
-      showToast('Saved locally — will sync when online.');
-    }
-  }
-
-  // ===================== UPLOAD: FILE HANDLING =====================
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  dom.dropzone.addEventListener('click', () => dom.fileInput.click());
-
-  dom.dropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dom.dropzone.classList.add('dragover');
-  });
-
-  dom.dropzone.addEventListener('dragleave', () => {
-    dom.dropzone.classList.remove('dragover');
-  });
-
-  dom.dropzone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dom.dropzone.classList.remove('dragover');
-    const file = e.dataTransfer.files && e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  });
-
-  dom.fileInput.addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) handleFile(file);
-  });
-
-  function handleFile(file) {
-    const fileName = file.name.toLowerCase();
-
-    if (fileName.endsWith('.csv')) {
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => processRows(results.data)
-      });
-    } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-        processRows(rows);
-      };
-      reader.readAsArrayBuffer(file);
-    } else {
-      showToast('Unsupported file type. Please use CSV or Excel.');
-    }
-  }
-
-  function processRows(rawRows) {
-    if (!rawRows || !rawRows.length) {
-      showToast('The file appears to be empty.');
-      return;
-    }
-
-    const keys = Object.keys(rawRows[0]);
-    const nameKey = keys.find(k => k.trim().toLowerCase() === 'name')
-      || keys.find(k => k.trim().toLowerCase().includes('name'));
-    const matricKey = keys.find(k => k.trim().toLowerCase().replace(/[^a-z]/g, '') === 'matricnumber')
-      || keys.find(k => k.trim().toLowerCase().includes('matric'));
-
-    if (!nameKey) {
-      showToast('Could not find a "Name" column in the file.');
-      return;
-    }
-
-    const students = rawRows
-      .map(row => ({
-        name: String(row[nameKey] ?? '').trim(),
-        matric: matricKey ? String(row[matricKey] ?? '').trim() : ''
-      }))
-      .filter(s => s.name);
-
-    if (!students.length) {
-      showToast('No valid rows found in the file.');
-      return;
-    }
-
-    state.pendingUpload = students;
-    renderPreview(students);
-  }
-
-  function renderPreview(students) {
-    const previewRows = students.slice(0, 10);
-    dom.previewTbody.innerHTML = previewRows.map(s =>
-      `<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.matric)}</td></tr>`
-    ).join('');
-    dom.previewMeta.textContent =
-      `Showing first ${previewRows.length} of ${students.length} students`;
-    dom.previewCard.classList.remove('hidden');
-  }
-
-  // ===================== UPLOAD: CONFIRM & BULK INSERT =====================
-  function setProgress(pct) {
-    dom.progressBar.style.width = pct + '%';
-  }
-
-  dom.confirmUploadBtn.addEventListener('click', confirmUpload);
-
-  async function confirmUpload() {
-    const students = state.pendingUpload;
-    if (!students || !students.length) return;
-
-    if (!db) {
-      showToast('Supabase is not configured. Check the CONFIG block.');
-      return;
-    }
-
-    dom.confirmUploadBtn.disabled = true;
-    dom.progressWrap.classList.remove('hidden');
-    setProgress(0);
-
-    try {
-      // Fresh upload: clear existing students
-      const { error: delErr } = await db.from('students').delete().not('id', 'is', null);
-      if (delErr) throw delErr;
-
-      const rows = students.map(s => ({
-        name: s.name,
-        matric: s.matric || null,
-        status: 'paid'
-      }));
-
-      const batchSize = 500;
-      for (let i = 0; i < rows.length; i += batchSize) {
-        const batch = rows.slice(i, i + batchSize);
-        const { error: insErr } = await db.from('students').insert(batch);
-        if (insErr) throw insErr;
-        setProgress(Math.min(100, Math.round(((i + batch.length) / rows.length) * 100)));
+      if (filtered.length === 0) {
+        dom.studentList.innerHTML = '';
+        dom.emptyStateQuery.textContent = query;
+        dom.emptyState.classList.remove('hidden');
+        return;
       }
 
-      showToast(`Uploaded ${rows.length} students successfully.`);
-      state.pendingUpload = null;
-      dom.previewCard.classList.add('hidden');
-      dom.fileInput.value = '';
-
-      await loadStudentsFromSupabase();
-      showScreen('gate');
-    } catch (err) {
-      console.error('Upload failed:', err);
-      showToast('Upload failed: ' + (err.message || err));
-    } finally {
-      dom.confirmUploadBtn.disabled = false;
-      dom.progressWrap.classList.add('hidden');
-      setProgress(0);
+      dom.emptyState.classList.add('hidden');
+      dom.studentList.innerHTML = filtered.map(renderStudentCard).join('');
     }
-  }
 
-  // ===================== INIT =====================
-  function init() {
-    dom.eventName.textContent = CONFIG.EVENT_NAME + ' 🎉';
-    updateOnlineStatus();
-    updateSyncBadge();
-    showScreen('gate');
-    loadStudentsFromSupabase();
-    processSyncQueue();
-    setupRealtimeSubscription();
-  }
+    dom.searchInput.addEventListener('input', renderStudentList);
 
-  init();
+    // ===================== GATE: MARK / UNMARK =====================
+    dom.studentList.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
 
-  // ===================== PWA =====================
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch((err) => {
-        console.error('Service worker registration failed:', err);
-      });
+      if (btn.dataset.action === 'mark') {
+        markEntered(id);
+      } else if (btn.dataset.action === 'unmark') {
+        const student = state.students.find(s => s.id === id);
+        const ok = confirm(`Unmark "${student ? student.name : 'this student'}" as entered?`);
+        if (ok) unmarkEntered(id);
+      }
     });
-  }
 
-  // Suppress the default install banner; the browser's
-  // "Add to Home Screen" / install menu option remains available.
-  let deferredInstallPrompt = null;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-  });
-</script>
+    async function markEntered(id) {
+      const student = state.students.find(s => s.id === id);
+      if (!student || student.status === 'entered') return;
+
+      const enteredAt = new Date().toISOString();
+      student.status = 'entered';
+      student.entered_at = enteredAt;
+      saveStudentsCache();
+      renderStudentList();
+      updateHeaderCounter();
+
+      await syncStudentUpdate(id, 'entered', enteredAt, 'mark');
+    }
+
+    async function unmarkEntered(id) {
+      const student = state.students.find(s => s.id === id);
+      if (!student || student.status !== 'entered') return;
+
+      student.status = 'paid';
+      student.entered_at = null;
+      saveStudentsCache();
+      renderStudentList();
+      updateHeaderCounter();
+
+      await syncStudentUpdate(id, 'paid', null, 'unmark');
+    }
+
+    async function syncStudentUpdate(id, status, enteredAt, action) {
+      if (!db || !navigator.onLine) {
+        addToSyncQueue({ id, status, entered_at: enteredAt, action });
+        return;
+      }
+
+      const { error } = await db
+        .from('students')
+        .update({ status, entered_at: enteredAt })
+        .eq('id', id);
+
+      if (error) {
+        console.error('Update failed, queuing for retry:', error);
+        addToSyncQueue({ id, status, entered_at: enteredAt, action });
+        showToast('Saved locally — will sync when online.');
+      }
+    }
+
+    // ===================== UPLOAD: FILE HANDLING =====================
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    dom.dropzone.addEventListener('click', () => dom.fileInput.click());
+
+    dom.dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dom.dropzone.classList.add('dragover');
+    });
+
+    dom.dropzone.addEventListener('dragleave', () => {
+      dom.dropzone.classList.remove('dragover');
+    });
+
+    dom.dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dom.dropzone.classList.remove('dragover');
+      const file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    dom.fileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file) {
+      const fileName = file.name.toLowerCase();
+
+      if (fileName.endsWith('.csv')) {
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => processRows(results.data)
+        });
+      } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+          processRows(rows);
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        showToast('Unsupported file type. Please use CSV or Excel.');
+      }
+    }
+
+    function processRows(rawRows) {
+      if (!rawRows || !rawRows.length) {
+        showToast('The file appears to be empty.');
+        return;
+      }
+
+      const keys = Object.keys(rawRows[0]);
+      const nameKey = keys.find(k => k.trim().toLowerCase() === 'name')
+        || keys.find(k => k.trim().toLowerCase().includes('name'));
+      const matricKey = keys.find(k => k.trim().toLowerCase().replace(/[^a-z]/g, '') === 'matricnumber')
+        || keys.find(k => k.trim().toLowerCase().includes('matric'));
+
+      if (!nameKey) {
+        showToast('Could not find a "Name" column in the file.');
+        return;
+      }
+
+      const students = rawRows
+        .map(row => ({
+          name: String(row[nameKey] ?? '').trim(),
+          matric: matricKey ? String(row[matricKey] ?? '').trim() : ''
+        }))
+        .filter(s => s.name);
+
+      if (!students.length) {
+        showToast('No valid rows found in the file.');
+        return;
+      }
+
+      state.pendingUpload = students;
+      renderPreview(students);
+    }
+
+    function renderPreview(students) {
+      const previewRows = students.slice(0, 10);
+      dom.previewTbody.innerHTML = previewRows.map(s =>
+        `<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.matric)}</td></tr>`
+      ).join('');
+      dom.previewMeta.textContent =
+        `Showing first ${previewRows.length} of ${students.length} students`;
+      dom.previewCard.classList.remove('hidden');
+    }
+
+    // ===================== UPLOAD: CONFIRM & BULK INSERT =====================
+    function setProgress(pct) {
+      dom.progressBar.style.width = pct + '%';
+    }
+
+    dom.confirmUploadBtn.addEventListener('click', confirmUpload);
+
+    async function confirmUpload() {
+      const students = state.pendingUpload;
+      if (!students || !students.length) return;
+
+      if (!db) {
+        showToast('Supabase is not configured. Check the CONFIG block.');
+        return;
+      }
+
+      dom.confirmUploadBtn.disabled = true;
+      dom.progressWrap.classList.remove('hidden');
+      setProgress(0);
+
+      try {
+        // Fresh upload: clear existing students
+        const { error: delErr } = await db.from('students').delete().not('id', 'is', null);
+        if (delErr) throw delErr;
+
+        const rows = students.map(s => ({
+          name: s.name,
+          matric: s.matric || null,
+          status: 'paid'
+        }));
+
+        const batchSize = 500;
+        for (let i = 0; i < rows.length; i += batchSize) {
+          const batch = rows.slice(i, i + batchSize);
+          const { error: insErr } = await db.from('students').insert(batch);
+          if (insErr) throw insErr;
+          setProgress(Math.min(100, Math.round(((i + batch.length) / rows.length) * 100)));
+        }
+
+        showToast(`Uploaded ${rows.length} students successfully.`);
+        state.pendingUpload = null;
+        dom.previewCard.classList.add('hidden');
+        dom.fileInput.value = '';
+
+        await loadStudentsFromSupabase();
+        showScreen('gate');
+      } catch (err) {
+        console.error('Upload failed:', err);
+        showToast('Upload failed: ' + (err.message || err));
+      } finally {
+        dom.confirmUploadBtn.disabled = false;
+        dom.progressWrap.classList.add('hidden');
+        setProgress(0);
+      }
+    }
+
+    // ===================== INIT =====================
+    function init() {
+      dom.eventName.textContent = CONFIG.EVENT_NAME + ' 🎉';
+      updateOnlineStatus();
+      updateSyncBadge();
+      showScreen('gate');
+      loadStudentsFromSupabase();
+      processSyncQueue();
+      setupRealtimeSubscription();
+    }
+
+    init();
+
+    // ===================== PWA =====================
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch((err) => {
+          console.error('Service worker registration failed:', err);
+        });
+      });
+    }
+
+    // Suppress the default install banner; the browser's
+    // "Add to Home Screen" / install menu option remains available.
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+  </script>
 </body>
+
 </html>
